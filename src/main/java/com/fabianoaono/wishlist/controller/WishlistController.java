@@ -1,7 +1,6 @@
 package com.fabianoaono.wishlist.controller;
 
 import com.fabianoaono.wishlist.entity.WishlistItem;
-import com.fabianoaono.wishlist.exception.MaxWishlistItemsExceededException;
 import com.fabianoaono.wishlist.service.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
