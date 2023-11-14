@@ -22,8 +22,8 @@ public class WishlistController {
         return ResponseEntity.ok(wishlistService.getWishlistItems(clientId));
     }
 
-    @GetMapping("/items/{clientId}/product/{productId}")
-    public ResponseEntity<Boolean> getWishlistItemByProduct(
+    @GetMapping("/items/{clientId}/contains/{productId}")
+    public ResponseEntity<Boolean> checkProductInWishlist(
             @PathVariable String clientId,
             @PathVariable String productId
     ) {
