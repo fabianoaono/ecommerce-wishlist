@@ -12,9 +12,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/wishlist")
 public class WishlistController {
+    
+    private final WishlistService wishlistService;
 
     @Autowired
-    private WishlistService wishlistService;
+    public WishlistController(WishlistService wishlistService) {
+        this.wishlistService = wishlistService;
+    }
 
     @GetMapping("/items/{clientId}")
     public ResponseEntity<List<WishlistItem>> getWishlistItems(@PathVariable String clientId) {

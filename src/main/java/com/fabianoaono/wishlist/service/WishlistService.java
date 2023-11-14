@@ -15,8 +15,12 @@ public class WishlistService {
 
     private static final int MAX_WISHLIST_ITEMS = 20;
 
-    @Autowired
     private WishlistItemRepository wishlistItemRepository;
+
+    @Autowired
+    public WishlistService(WishlistItemRepository wishlistItemRepository) {
+        this.wishlistItemRepository = wishlistItemRepository;
+    }
 
     public WishlistItem createWishlistItem(WishlistItem wishlistItem) {
 
