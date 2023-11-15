@@ -78,10 +78,14 @@ class WishlistControllerTest {
     @Test
     void createWishlistItem() {
 
+        String itemId = "1";
         String clientId = "1";
         String productId = "1";
-        WishlistItem request = new WishlistItem("", clientId, productId);
-        WishlistItem createdWishlistItem = new WishlistItem("1", clientId, productId);
+        WishlistItem request = WishlistItem.builder()
+                .clientId(clientId)
+                .productId(productId)
+                .build();
+        WishlistItem createdWishlistItem = new WishlistItem(itemId, clientId, productId);
 
         when(wishlistService.createWishlistItem(request)).thenReturn(createdWishlistItem);
 

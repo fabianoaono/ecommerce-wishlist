@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class WishlistService {
 
-    private static final int MAX_WISHLIST_ITEMS = 20;
+    public static final int MAX_WISHLIST_ITEMS = 20;
 
     private final WishlistItemRepository wishlistItemRepository;
 
