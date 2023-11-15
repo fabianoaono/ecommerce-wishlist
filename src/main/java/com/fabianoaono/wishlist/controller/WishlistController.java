@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/wishlist")
 public class WishlistController {
-    
+
     private final WishlistService wishlistService;
 
     @Autowired
@@ -36,7 +36,10 @@ public class WishlistController {
     }
 
     @PostMapping("/items/{clientId}")
-    public ResponseEntity<Object> createWishlistItem(@PathVariable String clientId, @RequestBody WishlistItem wishlistItem) {
+    public ResponseEntity<Object> createWishlistItem(
+            @PathVariable String clientId,
+            @RequestBody WishlistItem wishlistItem
+    ) {
 
         wishlistItem.setClientId(clientId);
         return new ResponseEntity(wishlistService.createWishlistItem(wishlistItem), HttpStatus.CREATED);

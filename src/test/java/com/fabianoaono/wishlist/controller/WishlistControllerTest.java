@@ -1,7 +1,10 @@
 package com.fabianoaono.wishlist.controller;
 
 import com.fabianoaono.wishlist.entity.WishlistItem;
+import com.fabianoaono.wishlist.exception.GlobalExceptionHandler;
+import com.fabianoaono.wishlist.exception.WishlistItemNotFoundException;
 import com.fabianoaono.wishlist.service.WishlistService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,8 +47,8 @@ class WishlistControllerTest {
     }
 
     @Test
-    void checkProductInWishlist() {
-        // Case #1: Positive case - existing product on wishlist
+    void checkProductInWishlist_ExistingProduct() {
+
         String clientId = "1";
         String existingProductId = "1";
         boolean wishlistContainsItem = true;
@@ -58,17 +63,21 @@ class WishlistControllerTest {
         verify(wishlistService).hasWishlistItem(clientId, existingProductId);
 
         verifyNoMoreInteractions(wishlistService);
+    }
 
-        // Case #2: Negative case - non existing product on wishlist
-        String nonExistingProductId = "2";
+    @Test
+    void checkProductInWishlist_NonExistingProduct() {
+
+        String clientId = "1";
+        String nonExistingProductId = "1";
         boolean wishlistDoesNotContainItem = false;
 
         when(wishlistService.hasWishlistItem(clientId, nonExistingProductId)).thenReturn(wishlistDoesNotContainItem);
 
-        ResponseEntity<Boolean> nonExistingResponseEntity  = wishlistController.checkProductInWishlist(clientId, nonExistingProductId);
+        ResponseEntity<Boolean> nonExistingResponseEntity = wishlistController.checkProductInWishlist(clientId, nonExistingProductId);
 
-        assertEquals(HttpStatus.OK, nonExistingResponseEntity .getStatusCode());
-        assertEquals(wishlistDoesNotContainItem, nonExistingResponseEntity .getBody());
+        assertEquals(HttpStatus.OK, nonExistingResponseEntity.getStatusCode());
+        assertEquals(wishlistDoesNotContainItem, nonExistingResponseEntity.getBody());
 
         verify(wishlistService).hasWishlistItem(clientId, nonExistingProductId);
 
@@ -100,7 +109,7 @@ class WishlistControllerTest {
     }
 
     @Test
-    void removeWishlistItemByProduct() {
+    void removeWishlistItemByProduct_ExistingProduct() {
 
         String clientId = "1";
         String productId = "1";
@@ -112,5 +121,19 @@ class WishlistControllerTest {
         verify(wishlistService).removeWishlistItemByProduct(clientId, productId);
 
         verifyNoMoreInteractions(wishlistService);
+    }
+
+    @Test
+    void removeWishlistItemByProduct_NonExistingProduct() {
+
+        String clientId = "1";
+        String nonExistingProductId = "1";
+
+        doThrow(new WishlistItemNotFoundException("Wishlist item not found for clientId " + clientId + " and productId " + nonExistingProductId))
+                .when(wishlistService)
+                .removeWishlistItemByProduct(clientId, nonExistingProductId);
+
+        WishlistItemNotFoundException exception = assertThrows(WishlistItemNotFoundException.class,
+                () -> wishlistController.removeWishlistItemByProduct(clientId, nonExistingProductId));
     }
 }
