@@ -15,7 +15,7 @@ public class WishlistService {
 
     private static final int MAX_WISHLIST_ITEMS = 20;
 
-    private WishlistItemRepository wishlistItemRepository;
+    private final WishlistItemRepository wishlistItemRepository;
 
     @Autowired
     public WishlistService(WishlistItemRepository wishlistItemRepository) {
@@ -29,7 +29,7 @@ public class WishlistService {
             throw new MaxWishlistItemsExceededException("Maximum wishlist items limit exceeded.");
         }
 
-        if (wishlistItemRepository.existsByClientIdAndProductId(wishlistItem.getClientId(), wishlistItem.getProductId())) {
+        if (wishlistItems.stream().anyMatch(item -> item.getProductId().equals(wishlistItem.getProductId()))) {
             throw new WishlistItemAlreadyExistsException("Wishlist item already exists for the given client and product.");
         }
 
