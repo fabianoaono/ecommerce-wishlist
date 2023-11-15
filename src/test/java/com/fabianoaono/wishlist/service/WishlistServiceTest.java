@@ -3,6 +3,7 @@ package com.fabianoaono.wishlist.service;
 import com.fabianoaono.wishlist.entity.WishlistItem;
 import com.fabianoaono.wishlist.exception.MaxWishlistItemsExceededException;
 import com.fabianoaono.wishlist.exception.WishlistItemAlreadyExistsException;
+import com.fabianoaono.wishlist.exception.WishlistItemNotFoundException;
 import com.fabianoaono.wishlist.repository.WishlistItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,6 +77,7 @@ class WishlistServiceTest {
 
     @Test
     void createWishlistItem_ItemAlreadyExists() {
+
         String existingItemId = "1";
         String clientId = "1";
         String productId = "1";
@@ -130,16 +132,55 @@ class WishlistServiceTest {
     }
 
     @Test
-    void hasWishlistItem() {
-        // TODO:
-        // Test checking if a product exists in the wishlist for an existing product ID.
-        // Test checking if a product exists in the wishlist for a non-existing product ID.
+    void hasWishlistItem_ExistingProduct() {
+
+        String clientId = "1";
+        String existingProductId = "1";
+
+        when(wishlistItemRepository.existsByClientIdAndProductId(clientId, existingProductId)).thenReturn(true);
+
+        assertTrue(wishlistService.hasWishlistItem(clientId, existingProductId));
+
+        verifyNoMoreInteractions(wishlistItemRepository);
     }
 
     @Test
-    void removeWishlistItemByProduct() {
-        // TODO:
-        // Test removing a wishlist item for an existing product ID.
-        // Test removing a wishlist item for a non-existent product ID (throw an exception).
+    void hasWishlistItem_NonExistingProduct() {
+
+        String clientId = "1";
+        String nonExistingProductId = "1";
+
+        when(wishlistItemRepository.existsByClientIdAndProductId(clientId, nonExistingProductId)).thenReturn(false);
+
+        assertFalse(wishlistService.hasWishlistItem(clientId, nonExistingProductId));
+
+        verifyNoMoreInteractions(wishlistItemRepository);
+    }
+
+    @Test
+    void removeWishlistItemByProduct_ExistingProduct() {
+        String clientId = "1";
+        String existingProductId = "1";
+
+        when(wishlistItemRepository.existsByClientIdAndProductId(clientId, existingProductId)).thenReturn(true);
+
+        wishlistService.removeWishlistItemByProduct(clientId, existingProductId);
+
+        verify(wishlistItemRepository, times(1)).deleteByClientIdAndProductId(clientId, existingProductId);
+
+        verifyNoMoreInteractions(wishlistItemRepository);
+    }
+
+    @Test
+    void removeWishlistItemByProduct_NonExistingProduct() {
+        String clientId = "1";
+        String nonExistingProductId = "1";
+
+        when(wishlistItemRepository.existsByClientIdAndProductId(clientId, nonExistingProductId)).thenReturn(false);
+
+        WishlistItemNotFoundException exception = assertThrows(WishlistItemNotFoundException.class,
+                () -> wishlistService.removeWishlistItemByProduct(clientId, nonExistingProductId));
+
+        verifyNoMoreInteractions(wishlistItemRepository);
     }
 }

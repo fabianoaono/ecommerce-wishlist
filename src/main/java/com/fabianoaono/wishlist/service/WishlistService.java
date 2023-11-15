@@ -46,7 +46,7 @@ public class WishlistService {
 
     public void removeWishlistItemByProduct(String clientId, String productId) {
 
-        if (wishlistItemRepository.existsByClientIdAndProductId(clientId, productId)) {
+        if (!wishlistItemRepository.existsByClientIdAndProductId(clientId, productId)) {
             throw new WishlistItemNotFoundException("Wishlist item not found for clientId " + clientId + " and productId " + productId);
         }
 
