@@ -56,8 +56,8 @@ Set the MongoDB URI as an environment variable:
 MONGO_URI=mongodb+srv://<username>:<password>@<cluster-url>/<database>?retryWrites=true&w=majority
 ```
 
-Contributing
+## Contributing
 Feel free to contribute to the project by opening issues or submitting pull requests.
 
-License
+## License
 This project is licensed under the MIT License.   
